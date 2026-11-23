@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sumatif Harian - Seni Rupa Kelas IV (Fase B)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f0f9ff;
+        }
+        .option-card {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .option-card:hover:not(:disabled) {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col text-slate-800">
+
+    <!-- Header -->
+    <header class="bg-sky-600 text-white shadow-md">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="bg-white/20 p-2 rounded-xl text-2xl">🎨</div>
+                <div>
+                    <h1 class="text-lg sm:text-xl font-extrabold tracking-tight">Sumatif Harian Seni Rupa</h1>
+                    <p class="text-xs text-sky-100 font-medium">Kelas IV (Fase B) • Semester Ganjil</p>
+                </div>
+            </div>
+            <div id="timer-badge" class="hidden bg-sky-800/80 px-3.5 py-1.5 rounded-xl font-mono text-base font-bold border border-sky-400/30 flex items-center gap-1.5">
+                <span>⏳</span>
+                <span id="timer">20:00</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow max-w-4xl w-full mx-auto px-4 py-6">
+        
+        <!-- Start Screen -->
+        <div id="start-screen" class="bg-white rounded-3xl shadow-sm border border-sky-100 p-6 sm:p-10 max-w-xl mx-auto text-center mt-4">
+            <div class="w-20 h-20 bg-amber-100 text-amber-500 rounded-3xl flex items-center justify-center mx-auto mb-5 text-4xl shadow-inner">
+                🖌️
+            </div>
+            <h2 class="text-2xl font-extrabold text-slate-900 mb-2">Asesmen Sumatif Harian</h2>
+            <p class="text-slate-600 text-sm sm:text-base mb-6 leading-relaxed">
+                Materi: <strong>Sketsa Pakaian (TP 1), Unsur Rupa & Karya 2D/3D (TP 2), serta Karakteristik Alat & Bahan (TP 3)</strong>.
+            </p>
+            
+            <div class="bg-sky-50/70 rounded-2xl p-4 mb-6 text-left text-sm space-y-2.5 border border-sky-100">
+                <div class="flex justify-between items-center">
+                    <span class="text-slate-500">Jumlah Soal</span>
+                    <span class="font-bold text-slate-800">15 Soal Pilihan Ganda</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-slate-500">Waktu Pengerjaan</span>
+                    <span class="font-bold text-slate-800">20 Menit</span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <span class="text-slate-500">Sistem Penilaian</span>
+                    <span class="font-bold text-sky-700">Skor Maksimal 100 + Pembahasan</span>
+                </div>
+            </div>
+
+            <div class="mb-6 text-left">
+                <label for="student-name" class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Nama Siswa (Opsional)</label>
+                <input type="text" id="student-name" placeholder="Ketik namamu di sini..." class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-sky-500 text-sm font-medium">
+            </div>
+
+            <button onclick="startQuiz()" class="w-full py-3.5 bg-sky-600 hover:bg-sky-700 active:bg-sky-800 text-white font-bold rounded-2xl shadow-md shadow-sky-600/20 transition text-base">
+                Mulai Kerjakan Kuis 🚀
+            </button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-screen" class="hidden space-y-5">
+            <!-- Top Progress & Navigation Bar -->
+            <div class="bg-white rounded-2xl shadow-sm border border-sky-100 p-4">
+                <div class="flex justify-between items-center mb-3">
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Navigasi Nomor Soal</span>
+                    <span class="text-xs font-semibold text-sky-600" id="answered-status">0 / 15 Terjawab</span>
+                </div>
+                <div id="nav-pills" class="grid grid-cols-5 sm:grid-cols-15 gap-2">
+                </div>
+            </div>
+
+            <!-- Question Card -->
+            <div class="bg-white rounded-3xl shadow-sm border border-sky-100 p-6 sm:p-8">
+                <div class="flex flex-wrap justify-between items-center gap-2 pb-4 mb-5 border-b border-slate-100">
+                    <div class="flex items-center gap-2">
+                        <span class="bg-sky-100 text-sky-800 font-extrabold px-3.5 py-1.5 rounded-xl text-sm">
+                            Soal <span id="q-num">1</span> / 15
+                        </span>
+                        <span id="tp-badge" class="bg-indigo-50 text-indigo-700 font-bold px-3 py-1.5 rounded-xl text-xs border border-indigo-100">
+                            TP 1: Sketsa Pakaian
+                        </span>
+                    </div>
+                    <button onclick="toggleHint()" class="text-xs sm:text-sm font-bold text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200 px-3.5 py-1.5 rounded-xl transition flex items-center gap-1.5">
+                        <span>💡</span> Petunjuk
+                    </button>
+                </div>
+
+                <!-- Hint Box -->
+                <div id="hint-box" class="hidden mb-5 p-4 bg-amber-50 border-l-4 border-amber-400 text-amber-900 text-sm rounded-r-xl">
+                    <span class="font-bold">Petunjuk:</span> <span id="hint-text"></span>
+                </div>
+
+                <!-- Question Text -->
+                <p id="question-text" class="text-slate-900 text-base sm:text-lg font-semibold leading-relaxed mb-6 whitespace-pre-line">
+                </p>
+
+                <!-- Options -->
+                <div id="options-list" class="space-y-3">
+                </div>
+
+                <!-- Footer Controls -->
+                <div class="flex justify-between items-center mt-8 pt-5 border-t border-slate-100">
+                    <button id="btn-prev" onclick="prevQuestion()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-sm disabled:opacity-40 disabled:cursor-not-allowed transition">
+                        ← Sebelumnya
+                    </button>
+                    <button id="btn-next" onclick="nextQuestion()" class="px-5 py-2.5 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-xl text-sm shadow-sm transition">
+                        Selanjutnya →
+                    </button>
+                    <button id="btn-submit" onclick="confirmSubmit()" class="hidden px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl text-sm shadow-md shadow-emerald-600/20 transition">
+                        Selesai & Lihat Nilai ✓
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Result Screen -->
+        <div id="result-screen" class="hidden space-y-6">
+            <div class="bg-white rounded-3xl shadow-sm border border-sky-100 p-6 sm:p-8 text-center">
+                <span class="inline-block px-3 py-1 bg-sky-100 text-sky-700 font-bold text-xs rounded-full uppercase tracking-wider mb-2">Hasil Sumatif Harian</span>
+                <h2 class="text-2xl font-extrabold text-slate-900 mb-1" id="result-greeting">Hebat, Kamu Selesai!</h2>
+                <p class="text-slate-500 text-sm mb-6">Berikut adalah nilai dan rincian hasil pengerjaanmu.</p>
+
+                <div class="w-36 h-36 rounded-full bg-gradient-to-br from-sky-500 to-indigo-600 text-white flex flex-col items-center justify-center mx-auto mb-6 shadow-lg shadow-sky-500/25">
+                    <span class="text-xs font-bold uppercase tracking-widest opacity-90">Nilai Akhir</span>
+                    <span id="final-score" class="text-5xl font-extrabold">0</span>
+                </div>
+
+                <div class="grid grid-cols-3 gap-3 max-w-md mx-auto mb-6">
+                    <div class="bg-emerald-50 border border-emerald-200 p-3 rounded-2xl">
+                        <div class="text-xl font-extrabold text-emerald-700" id="stat-correct">0</div>
+                        <div class="text-xs font-semibold text-emerald-600">Benar</div>
+                    </div>
+                    <div class="bg-rose-50 border border-rose-200 p-3 rounded-2xl">
+                        <div class="text-xl font-extrabold text-rose-700" id="stat-wrong">0</div>
+                        <div class="text-xs font-semibold text-rose-600">Salah</div>
+                    </div>
+                    <div class="bg-slate-50 border border-slate-200 p-3 rounded-2xl">
+                        <div class="text-xl font-extrabold text-slate-700" id="stat-empty">0</div>
+                        <div class="text-xs font-semibold text-slate-500">Kosong</div>
+                    </div>
+                </div>
+
+                <button onclick="location.reload()" class="px-6 py-3 bg-sky-600 hover:bg-sky-700 text-white font-bold rounded-2xl text-sm shadow-sm transition">
+                    🔄 Ulangi Kuis
+                </button>
+            </div>
+
+            <!-- Answer Key & Rationale -->
+            <div class="bg-white rounded-3xl shadow-sm border border-sky-100 p-6 sm:p-8">
+                <h3 class="text-lg font-extrabold text-slate-900 mb-4 pb-3 border-b border-slate-100">📖 Kunci Jawaban & Pembahasan</h3>
+                <div id="review-list" class="space-y-5">
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        const questions = [
+            // TP 1: Sketsa Pakaian
+            {
+                tp: "TP 1: Sketsa Pakaian",
+                q: "Pakaian yang cenderung santai dan biasa dipakai sehari-hari di rumah atau saat bermain disebut pakaian ....",
+                options: ["formal", "kasual", "adat", "seragam"],
+                correct: 1,
+                hint: "Ingat istilah jenis pakaian santai yang nyaman digunakan saat bermain di rumah.",
+                rationale: "Pakaian kasual adalah pakaian santai yang dipakai sehari-hari atau untuk bermain."
+            },
+            {
+                tp: "TP 1: Sketsa Pakaian",
+                q: "Dina akan menggambar sketsa pakaian formal. Pilihan gambar yang paling tepat adalah ....",
+                options: [
+                    "kaus dan celana pendek",
+                    "jaket dan sweter",
+                    "kemeja berkerah dan celana dasar",
+                    "kaus dan rok bermotif ramai"
+                ],
+                correct: 2,
+                hint: "Pakaian formal biasanya rapi, sopan, dan dipakai untuk acara resmi.",
+                rationale: "Pakaian formal bersifat sederhana dan rapi, misalnya kemeja berkerah dan celana atau rok dasar."
+            },
+            {
+                tp: "TP 1: Sketsa Pakaian",
+                q: "Rudi ingin menggambar satu set pakaian impian. Ide sketsa yang tepat adalah ....",
+                options: [
+                    "kemeja sekolah berwarna putih",
+                    "sweter untuk hari hujan",
+                    "celana pendek untuk bermain",
+                    "kostum pekerjaan impian sebagai dokter"
+                ],
+                correct: 3,
+                hint: "Pakaian impian berkaitan dengan cita-cita atau kostum fantasi/cosplay.",
+                rationale: "Kostum pekerjaan impian (dokter, guru, pemadam kebakaran, dan lain-lain) termasuk ide pakaian impian."
+            },
+            {
+                tp: "TP 1: Sketsa Pakaian",
+                q: "Sinta membuat sketsa cosplay hewan endemik dari Kalimantan. Hewan yang tepat untuk digambar Sinta adalah ....",
+                options: ["orang utan", "komodo", "harimau", "anoa"],
+                correct: 0,
+                hint: "Hewan primata berbulu kemerahan yang habitat aslinya berada di hutan Kalimantan.",
+                rationale: "Orang utan adalah hewan endemik Kalimantan. Komodo berasal dari NTT, harimau dari Sumatera, dan anoa dari Sulawesi."
+            },
+            {
+                tp: "TP 1: Sketsa Pakaian",
+                q: "Sebelum mulai menggambar, Bimo mencari gambar pakaian dari buku cerita di perpustakaan untuk mengumpulkan ide. Kegiatan ini disebut ....",
+                options: ["mewarnai", "menempel", "brainstorming ide", "menyempurnakan sketsa"],
+                correct: 2,
+                hint: "Proses mencari referensi dan menggali gagasan sebelum membuat karya.",
+                rationale: "Mengumpulkan ide dan referensi sebelum mulai menggambar disebut brainstorming ide."
+            },
+
+            // TP 2: Unsur Rupa serta Karya Dua Dimensi dan Tiga Dimensi
+            {
+                tp: "TP 2: Unsur Rupa & 2D/3D",
+                q: "Lima unsur rupa yang digunakan dalam membuat karya seni adalah ....",
+                options: [
+                    "garis, titik, irama, warna, dan ruang",
+                    "garis, bidang, bentuk, warna, dan tekstur",
+                    "bidang, ruang, gelap terang, warna, dan irama",
+                    "garis, bentuk, ruang, tekstur, dan keseimbangan"
+                ],
+                correct: 1,
+                hint: "Bedakan antara unsur rupa dengan prinsip seni rupa (seperti irama dan keseimbangan).",
+                rationale: "Lima unsur rupa dasar meliputi garis, bidang, bentuk, warna, dan tekstur."
+            },
+            {
+                tp: "TP 2: Unsur Rupa & 2D/3D",
+                q: "Permukaan kulit jeruk terasa kasar dan berbintik-bintik. Unsur rupa yang ditunjukkan oleh sifat tersebut adalah ....",
+                options: ["garis", "warna", "bentuk", "tekstur"],
+                correct: 3,
+                hint: "Unsur rupa yang berkaitan dengan nilai raba (kasar/halus) suatu permukaan.",
+                rationale: "Sifat kasar atau halus pada permukaan benda disebut tekstur."
+            },
+            {
+                tp: "TP 2: Unsur Rupa & 2D/3D",
+                q: "Kelompok karya seni rupa yang semuanya termasuk karya dua dimensi adalah ....",
+                options: [
+                    "lukisan, kaligrafi, dan poster",
+                    "lukisan, patung, dan poster",
+                    "kaligrafi, diorama, dan lukisan",
+                    "poster, patung, dan kriya"
+                ],
+                correct: 0,
+                hint: "Karya dua dimensi hanya memiliki ukuran panjang dan lebar (berupa bidang datar).",
+                rationale: "Lukisan, kaligrafi, dan poster hanya memiliki panjang dan lebar (2D). Patung, diorama, dan kriya adalah karya tiga dimensi."
+            },
+            {
+                tp: "TP 2: Unsur Rupa & 2D/3D",
+                q: "Karya seni rupa tiga dimensi memiliki ciri ....",
+                options: [
+                    "hanya memiliki panjang dan lebar",
+                    "hanya dapat dilihat dari satu sisi",
+                    "memiliki panjang, lebar, dan tinggi sehingga menempati ruang",
+                    "tidak memiliki volume"
+                ],
+                correct: 2,
+                hint: "Karya 3D memiliki volume dan dapat dilihat dari berbagai arah.",
+                rationale: "Karya tiga dimensi memiliki panjang, lebar, dan tinggi (volume) sehingga menempati ruang."
+            },
+            {
+                tp: "TP 2: Unsur Rupa & 2D/3D",
+                q: "Rani membuat miniatur pemandangan sawah dari kardus bekas. Karya Rani termasuk ....",
+                options: [
+                    "lukisan, yaitu karya dua dimensi",
+                    "diorama, yaitu karya tiga dimensi",
+                    "poster, yaitu karya dua dimensi",
+                    "kaligrafi, yaitu karya tiga dimensi"
+                ],
+                correct: 1,
+                hint: "Benda miniatur tiga dimensi yang menggambarkan suatu pemandangan atau adegan.",
+                rationale: "Diorama adalah benda miniatur tiga dimensi yang menggambarkan pemandangan atau adegan tertentu."
+            },
+
+            // TP 3: Karakteristik Alat dan Bahan
+            {
+                tp: "TP 3: Alat dan Bahan",
+                q: "Pasangan bahan lunak yang dapat dibentuk untuk membuat karya tiga dimensi adalah ....",
+                options: [
+                    "kayu dan batu",
+                    "besi dan kaca",
+                    "plastisin dan tanah liat",
+                    "batu dan tanah liat"
+                ],
+                correct: 2,
+                hint: "Pilih bahan yang empuk dan mudah ditekan atau dibentuk langsung dengan tangan.",
+                rationale: "Plastisin dan tanah liat adalah bahan lunak yang mudah dibentuk menjadi karya tiga dimensi."
+            },
+            {
+                tp: "TP 3: Alat dan Bahan",
+                q: "Sebuah karya memiliki warna transparan, terdapat bercak cipratan warna di kertas, dan sapuan warnanya tampak dinamis. Karya tersebut kemungkinan dibuat dengan ....",
+                options: ["cat air", "krayon", "pensil warna", "cat akrilik"],
+                correct: 0,
+                hint: "Media pewarna basah yang diencerkan dengan air sehingga hasilnya tembus pandang.",
+                rationale: "Cat air bercirikan warna transparan, sering menimbulkan bercak cipratan, dan memiliki sapuan yang ekspresif/dinamis."
+            },
+            {
+                tp: "TP 3: Alat dan Bahan",
+                q: "Dibandingkan pensil warna, hasil karya yang menggunakan krayon cenderung ....",
+                options: [
+                    "tipis dan kertasnya masih terlihat",
+                    "transparan dan berbercak cipratan",
+                    "lembut dan arsirannya tampak jelas",
+                    "tebal, tegas, dan menutup permukaan kertas"
+                ],
+                correct: 3,
+                hint: "Krayon terbuat dari lilin berminyak yang warnanya pekat saat digoreskan.",
+                rationale: "Krayon menghasilkan warna tebal, tegas, dan menutup permukaan kertas dengan pekat, berbeda dengan pensil warna yang tipis."
+            },
+            {
+                tp: "TP 3: Alat dan Bahan",
+                q: "Lem serba guna dipakai untuk menempel benda bervolume seperti botol bekas. Tindakan yang tepat saat memakai lem ini adalah ....",
+                options: [
+                    "memakainya tanpa pendampingan guru",
+                    "didampingi guru dan berhati-hati agar tidak terkena kulit",
+                    "mengoleskannya langsung dengan jari",
+                    "membongkar dan menempel ulang berkali-kali"
+                ],
+                correct: 1,
+                hint: "Utamakan keselamatan kerja karena lem serba guna memiliki daya rekat yang sangat kuat.",
+                rationale: "Lem serba guna sangat kuat dan dapat melukai kulit, sehingga penggunaannya harus didampingi guru dan dilakukan dengan hati-hati."
+            },
+            {
+                tp: "TP 3: Alat dan Bahan",
+                q: "Cara yang tepat untuk memotong double tape adalah ....",
+                options: [
+                    "menyobeknya langsung dengan tangan",
+                    "memotongnya dengan gunting",
+                    "memotongnya dengan cutter",
+                    "menggigitnya"
+                ],
+                correct: 0,
+                hint: "Pita perekat dua sisi berbahan kertas tipis mudah putus tanpa alat potong logam.",
+                rationale: "Double tape sebaiknya disobek langsung dengan tangan karena perekatnya dapat menempel dan mengotori mata gunting."
+            }
+        ];
+
+        let currentIndex = 0;
+        let answers = new Array(questions.length).fill(null);
+        let secondsLeft = 20 * 60;
+        let timerId;
+
+        function startQuiz() {
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            document.getElementById('timer-badge').classList.remove('hidden');
+            renderNavPills();
+            renderQuestion(0);
+            startTimer();
+        }
+
+        function startTimer() {
+            timerId = setInterval(() => {
+                secondsLeft--;
+                const m = Math.floor(secondsLeft / 60);
+                const s = secondsLeft % 60;
+                document.getElementById('timer').textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+                if (secondsLeft <= 0) {
+                    clearInterval(timerId);
+                    finishQuiz();
+                }
+            }, 1000);
+        }
+
+        function renderNavPills() {
+            const container = document.getElementById('nav-pills');
+            container.innerHTML = '';
+            const answeredCount = answers.filter(a => a !== null).length;
+            document.getElementById('answered-status').textContent = `${answeredCount} / ${questions.length} Terjawab`;
+
+            questions.forEach((_, i) => {
+                const btn = document.createElement('button');
+                btn.textContent = i + 1;
+                btn.onclick = () => renderQuestion(i);
+                
+                let cls = "h-9 rounded-xl font-bold text-xs sm:text-sm border transition ";
+                if (i === currentIndex) {
+                    cls += "bg-sky-600 text-white border-sky-600 shadow-sm";
+                } else if (answers[i] !== null) {
+                    cls += "bg-emerald-100 text-emerald-800 border-emerald-400";
+                } else {
+                    cls += "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100";
+                }
+                btn.className = cls;
+                container.appendChild(btn);
+            });
+        }
+
+        function renderQuestion(idx) {
+            currentIndex = idx;
+            const item = questions[idx];
+            
+            document.getElementById('q-num').textContent = idx + 1;
+            document.getElementById('tp-badge').textContent = item.tp;
+            document.getElementById('question-text').textContent = item.q;
+            document.getElementById('hint-text').textContent = item.hint;
+            document.getElementById('hint-box').classList.add('hidden');
+
+            const optionsList = document.getElementById('options-list');
+            optionsList.innerHTML = '';
+            const labels = ['A', 'B', 'C', 'D'];
+
+            item.options.forEach((opt, optIdx) => {
+                const selected = answers[idx] === optIdx;
+                const btn = document.createElement('button');
+                btn.onclick = () => chooseOption(optIdx);
+                btn.className = `option-card w-full text-left p-4 rounded-2xl border-2 flex items-center gap-3.5 ${
+                    selected 
+                    ? 'bg-sky-50 border-sky-500 text-sky-950 font-bold shadow-sm' 
+                    : 'bg-white border-slate-100 hover:border-sky-200 hover:bg-slate-50 text-slate-700 font-medium'
+                }`;
+
+                btn.innerHTML = `
+                    <span class="w-8 h-8 rounded-xl flex-shrink-0 flex items-center justify-center text-sm font-extrabold ${
+                        selected ? 'bg-sky-600 text-white' : 'bg-slate-100 text-slate-600'
+                    }">${labels[optIdx]}</span>
+                    <span class="text-sm sm:text-base">${opt}</span>
+                `;
+                optionsList.appendChild(btn);
+            });
+
+            document.getElementById('btn-prev').disabled = idx === 0;
+            if (idx === questions.length - 1) {
+                document.getElementById('btn-next').classList.add('hidden');
+                document.getElementById('btn-submit').classList.remove('hidden');
+            } else {
+                document.getElementById('btn-next').classList.remove('hidden');
+                document.getElementById('btn-submit').classList.add('hidden');
+            }
+
+            renderNavPills();
+        }
+
+        function chooseOption(optIdx) {
+            answers[currentIndex] = optIdx;
+            renderQuestion(currentIndex);
+        }
+
+        function toggleHint() {
+            document.getElementById('hint-box').classList.toggle('hidden');
+        }
+
+        function prevQuestion() {
+            if (currentIndex > 0) renderQuestion(currentIndex - 1);
+        }
+
+        function nextQuestion() {
+            if (currentIndex < questions.length - 1) renderQuestion(currentIndex + 1);
+        }
+
+        function confirmSubmit() {
+            const empty = answers.filter(a => a === null).length;
+            const text = empty > 0 
+                ? `Masih ada ${empty} soal yang belum kamu jawab. Yakin ingin mengumpulkan sekarang?`
+                : "Yakin ingin menyelesaikan dan melihat nilai kuis?";
+            if (confirm(text)) finishQuiz();
+        }
+
+        function finishQuiz() {
+            clearInterval(timerId);
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('timer-badge').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+
+            const name = document.getElementById('student-name').value.trim();
+            if (name) {
+                document.getElementById('result-greeting').textContent = `Hebat, ${name}!`;
+            }
+
+            let correct = 0, wrong = 0, empty = 0;
+            const reviewList = document.getElementById('review-list');
+            reviewList.innerHTML = '';
+            const labels = ['A', 'B', 'C', 'D'];
+
+            questions.forEach((item, i) => {
+                const ans = answers[i];
+                const isRight = ans === item.correct;
+
+                if (ans === null) empty++;
+                else if (isRight) correct++;
+                else wrong++;
+
+                const box = document.createElement('div');
+                box.className = `p-5 rounded-2xl border ${
+                    ans === null ? 'bg-slate-50 border-slate-200' :
+                    isRight ? 'bg-emerald-50/50 border-emerald-200' : 'bg-rose-50/50 border-rose-200'
+                }`;
+
+                const badge = ans === null
+                    ? `<span class="text-xs font-bold px-2.5 py-1 rounded-lg bg-slate-200 text-slate-700">Kosong</span>`
+                    : isRight
+                        ? `<span class="text-xs font-bold px-2.5 py-1 rounded-lg bg-emerald-100 text-emerald-800">✓ Benar</span>`
+                        : `<span class="text-xs font-bold px-2.5 py-1 rounded-lg bg-rose-100 text-rose-800">✗ Salah</span>`;
+
+                box.innerHTML = `
+                    <div class="flex flex-wrap justify-between items-center gap-2 mb-2">
+                        <div class="flex items-center gap-2">
+                            <span class="font-extrabold text-slate-800 text-sm">Soal Nomor ${i + 1}</span>
+                            <span class="text-xs font-semibold px-2 py-0.5 rounded bg-sky-100 text-sky-800">${item.tp}</span>
+                        </div>
+                        ${badge}
+                    </div>
+                    <p class="text-slate-900 font-semibold text-sm sm:text-base mb-3 whitespace-pre-line">${item.q}</p>
+                    <div class="text-xs sm:text-sm space-y-1 mb-3">
+                        <p class="text-slate-700"><strong>Jawabanmu:</strong> ${ans !== null ? `${labels[ans]}. ${item.options[ans]}` : 'Tidak dijawab'}</p>
+                        <p class="text-emerald-700"><strong>Kunci Jawaban:</strong> ${labels[item.correct]}. ${item.options[item.correct]}</p>
+                    </div>
+                    <div class="bg-white p-3.5 rounded-xl border border-slate-200/80 text-xs sm:text-sm text-slate-600">
+                        <strong class="text-slate-800">Pembahasan:</strong> ${item.rationale}
+                    </div>
+                `;
+                reviewList.appendChild(box);
+            });
+
+            document.getElementById('final-score').textContent = Math.round((correct * 100) / questions.length);
+            document.getElementById('stat-correct').textContent = correct;
+            document.getElementById('stat-wrong').textContent = wrong;
+            document.getElementById('stat-empty').textContent = empty;
+        }
+    </script>
+</body>
+</html>
